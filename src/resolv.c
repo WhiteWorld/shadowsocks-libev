@@ -87,7 +87,7 @@ static struct sockaddr *choose_any(struct ResolvQuery *);
 int
 resolv_init(struct ev_loop *loop, char **nameservers, int nameserver_num)
 {
-    resolv_mode = MODE_IPV4_FIRST;
+    resolv_mode = MODE_IPV6_FIRST;
 
     struct dns_ctx *ctx = &dns_defctx;
     if (nameservers == NULL) {
@@ -147,6 +147,7 @@ resolv_query(const char *hostname, void (*client_cb)(struct sockaddr *, void *),
              void (*client_free_cb)(void *), void *client_cb_data,
              uint16_t port)
 {
+    LOGI("resolv_query");
     struct dns_ctx *ctx = (struct dns_ctx *)resolv_io_watcher.data;
 
     /*

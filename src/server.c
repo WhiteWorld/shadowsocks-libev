@@ -333,6 +333,7 @@ static struct remote *connect_to_remote(struct addrinfo *res,
 
 static void server_recv_cb(EV_P_ ev_io *w, int revents)
 {
+    LOGI("server_recv_cb");
     struct server_ctx *server_recv_ctx = (struct server_ctx *)w;
     struct server *server = server_recv_ctx->server;
     struct remote *remote = NULL;
@@ -370,7 +371,7 @@ static void server_recv_cb(EV_P_ ev_io *w, int revents)
             return;
         }
     }
-
+    LOGI("server->stage:%d", server->stage);
     // handle incomplete header
     if (server->stage == 0) {
         r += server->buf_len;
@@ -444,7 +445,7 @@ static void server_recv_cb(EV_P_ ev_io *w, int revents)
         struct sockaddr_storage storage;
         memset(&info, 0, sizeof(struct addrinfo));
         memset(&storage, 0, sizeof(struct sockaddr_storage));
-
+        LOGI("atyp:%d", atyp);
         // get remote addr and port
         if (atyp == 1) {
             // IP V4
@@ -551,7 +552,7 @@ static void server_recv_cb(EV_P_ ev_io *w, int revents)
             server->buf_len = r - offset;
             server->buf_idx = offset;
         }
-
+        LOGI("need_query:%d",need_query);
         if (!need_query) {
             struct remote *remote = connect_to_remote(&info, server);
 
@@ -945,6 +946,7 @@ static void close_and_free_remote(EV_P_ struct remote *remote)
 
 static struct server * new_server(int fd, struct listen_ctx *listener)
 {
+    LOGI("new_server");
     if (verbose) {
         server_conn++;
     }
@@ -1040,6 +1042,7 @@ static void signal_cb(EV_P_ ev_signal *w, int revents)
 
 static void accept_cb(EV_P_ ev_io *w, int revents)
 {
+    LOGI("accept_cb");
     struct listen_ctx *listener = (struct listen_ctx *)w;
     int serverfd = accept(listener->fd, NULL, NULL);
     if (serverfd == -1) {
